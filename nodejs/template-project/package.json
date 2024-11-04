@@ -28,7 +28,7 @@
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "@vitest/coverage-v8": "^1.2.2",
-    "eslint": "^8.56.0",
+    "eslint": "8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "simple-git-hooks": "^2.9.0",
     "lint-staged": "^15.2.2",
@@ -38,12 +38,12 @@
     "vitest": "^1.2.2"
   },
   "lint-staged": {
-    "*.ts": [
+    "src/**/*.ts": [
       "eslint --fix",
       "prettier --write"
     ]
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "cd nodejs/template-project && npx lint-staged"
   }
 }
