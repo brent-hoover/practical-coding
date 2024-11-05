@@ -1,4 +1,4 @@
-#Practical Coding Exercises
+# Practical Coding Exercises
 
 > DSA problems aren't what programmers do all day!
 
