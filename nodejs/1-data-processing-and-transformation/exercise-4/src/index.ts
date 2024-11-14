@@ -5,7 +5,7 @@ export type DedupOptions = {
   keepStrategy: 'first' | 'last';
   // Optional custom comparison function for specific fields
   comparators?: {
-    [key: string]: (a: any, b: any) => boolean;
+    [key: string]: (a: unknown, b: unknown) => boolean;
   };
 };
 
@@ -33,7 +33,7 @@ export function get<T, U>(obj: T, path: string, defaultValue?: U): U | undefined
   return (result !== undefined ? result : defaultValue) as U | undefined;
 }
 
-function isEqual(a: any, b: any, comparators: { [key: string]: (a: any, b: any) => boolean }): boolean {
+function isEqual<T>(a: T, b: T, comparators: { [key: string]: (a: T, b: T) => boolean }): boolean {
   let isEqual = true;
   for (const comparator of Object.values(comparators)) {
     if (!comparator(a, b)) {

@@ -148,7 +148,12 @@ describe('deduplicateData', () => {
       keys: ['name'],
       keepStrategy: 'first',
       comparators: {
-        name: (a, b) => a.toLowerCase() === b.toLowerCase()
+        name: (a: unknown, b: unknown) => {
+          if (typeof a === 'string' && typeof b === 'string') {
+            return a.toLowerCase() === b.toLowerCase();
+          }
+          return a === b;
+        }
       }
     };
 
