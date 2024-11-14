@@ -18,8 +18,19 @@ export type DedupResult<T> = {
   indexMap: Map<number, number>;
 };
 
-function simpleEquals(a, b): boolean {
+function simpleEquals(a: unknown, b: unknown): boolean {
   return a === b;
+}
+
+export function get<T, U>(obj: T, path: string, defaultValue?: U): U | undefined {
+  const result = path.split('.').reduce((acc: unknown, key: string) => {
+    if (acc && typeof acc === 'object' && key in acc) {
+      return (acc as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, obj);
+
+  return (result !== undefined ? result : defaultValue) as U | undefined;
 }
 
 function isEqual(a: any, b: any, comparators: { [key: string]: (a: any, b: any) => boolean }): boolean {
@@ -43,7 +54,7 @@ export function isDuplicate<T extends Record<string, unknown>>(
   for (const item of items) {
     let found = 0;
     for (const key of options.keys) {
-      if (isEqual(item[key], record[key], comparators)) {
+      if (isEqual(get(item, key), get(record, key), comparators)) {
         found += 1;
       }
     }
@@ -59,7 +70,7 @@ export function isDuplicate<T extends Record<string, unknown>>(
 function filterByKeys<T extends Record<string, unknown>>(record: T, keys: string[]): boolean {
   let found = 0;
   for (const key of keys) {
-    if (record[key]) found += 1;
+    if (get(record, key)) found += 1;
   }
   return found === keys.length;
 }

@@ -1,5 +1,20 @@
 import { describe, it, expect } from 'vitest';
-import { deduplicateData, isDuplicate, type DedupOptions } from './index.js';
+import { deduplicateData, isDuplicate, get, type DedupOptions } from './index.js';
+
+describe('get', () => {
+  it('should allow you to fetch the values with keys with nest dot notions', () => {
+    const obj = {
+      animal: {
+        dog: {
+          feet: 4
+        }
+      }
+    }
+    const path = 'animal.dog.feet';
+    const result = get(obj, path);
+    expect(result).toBe(4);
+  })
+})
 
 describe('isDuplicate', () => {
   it('should return true when the record already exists in the record set with one key', () => {
