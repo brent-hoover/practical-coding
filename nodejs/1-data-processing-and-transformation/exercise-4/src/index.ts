@@ -89,12 +89,22 @@ export function deduplicateData<T extends Record<string, unknown>>(
   for (const item of items) {
     let foundIndex = 0;
     if (isDuplicate(uniqueItems, item, options)) {
-      dedupeResult.duplicatesRemoved += 1;
-      if (options.keepStrategy === 'last') {
-        foundIndex = items.findIndex((item) => {
-          return filterByKeys(item, options.keys)
-        })
-        uniqueItems[foundIndex] = item;
+      dedupeResult.duplicatesRemoved += 1;if (options.keepStrategy === 'last') {
+        foundIndex = uniqueItems.findIndex((existingItem) => {
+          let matches = 0;
+          for (const key of options.keys) {
+            const val1 = get(existingItem, key);
+            const val2 = get(item, key);
+            const comparator = options.comparators?.[key] ?? simpleEquals;
+            if (comparator(val1, val2)) {
+              matches++;
+            }
+          }
+          return matches === options.keys.length;
+        });
+        if (foundIndex !== -1) {
+          uniqueItems[foundIndex] = item;
+        }
       }
       dedupeResult.indexMap.set(currentRecordIndex, foundIndex)
     } else {

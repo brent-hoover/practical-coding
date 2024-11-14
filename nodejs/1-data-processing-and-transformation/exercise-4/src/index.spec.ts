@@ -202,4 +202,32 @@ describe('deduplicateData', () => {
       { user: { id: 2 }, data: 'b' }
     ]);
   });
+
+  it('should correctly handle keepStrategy last with multiple similar items', () => {
+    const input = [
+      { id: 1, value: 'first' },
+      { id: 2, value: 'stays' },
+      { id: 1, value: 'second' },
+      { id: 1, value: 'last' },
+      { id: 2, value: 'ignored' }
+    ];
+
+    const options: DedupOptions = {
+      keys: ['id'],
+      keepStrategy: 'last'
+    };
+
+    const result = deduplicateData(input, options);
+
+    expect(result.items).toEqual([
+      { id: 1, value: 'last' },    // Should keep last occurrence of id:1
+      { id: 2, value: 'ignored' }  // Should keep last occurrence of id:2
+    ]);
+    expect(result.duplicatesRemoved).toBe(3);
+    expect(result.indexMap.get(0)).toBe(0); // First id:1 maps to final id:1 position
+    expect(result.indexMap.get(1)).toBe(1); // First id:2 maps to final id:2 position
+    expect(result.indexMap.get(2)).toBe(0); // Second id:1 maps to final id:1 position
+    expect(result.indexMap.get(3)).toBe(0); // Last id:1 maps to final id:1 position
+    expect(result.indexMap.get(4)).toBe(1); // Last id:2 maps to final id:2 position
+  });
 });
