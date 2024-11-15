@@ -9,15 +9,15 @@ export type TreeNode<T extends FlatNode> = T & {
 };
 
 export type BuildTreeOptions = {
-  rootIdentifier: null | string; // What marks a node as root (null or specific parentId)
-  idField?: string; // Defaults to 'id'
-  parentField?: string; // Defaults to 'parentId'
+  rootIdentifier: null | string;
+  idField?: string;
+  parentField?: string;
 };
 
 export type TreeResult<T extends FlatNode> = {
-  tree: TreeNode<T>[]; // The resulting tree structure
-  orphanedNodes: T[]; // Nodes whose parents don't exist
-  circularRefs: T[]; // Nodes that would create cycles
+  tree: TreeNode<T>[];
+  orphanedNodes: T[];
+  circularRefs: T[];
 };
 
 export function findNodeById<T extends FlatNode>(
@@ -37,6 +37,31 @@ export function findNodeById<T extends FlatNode>(
   return undefined;
 }
 
+function detectCycle<T extends FlatNode>(
+  nodeId: string,
+  parentId: string,
+  nodes: T[],
+  idField: string = 'id',
+  parentField: string = 'parentId'
+): boolean {
+  let currentId = parentId;
+  const visited = new Set<string>();
+
+  while (currentId) {
+    if (currentId === nodeId) return true;
+    if (visited.has(currentId)) return true;
+
+    visited.add(currentId);
+    const parentNode = nodes.find((n) => n[idField] === currentId);
+    if (!parentNode) break;
+
+    currentId = parentNode[parentField] as string;
+    if (!currentId) break;
+  }
+
+  return false;
+}
+
 export function buildTree<T extends FlatNode>(
   nodes: T[],
   options: BuildTreeOptions
@@ -47,29 +72,57 @@ export function buildTree<T extends FlatNode>(
     orphanedNodes: [],
     circularRefs: [],
   };
+
   if (!nodes.length) return results;
-  const rootNodes = nodes.filter((n) => n[parentField] === rootIdentifier);
-  if (rootNodes) {
+
+  // Create a map of nodes for easier lookup
+  const nodeMap = new Map<string, T>();
+  nodes.forEach((node) => nodeMap.set(node[idField] as string, node));
+
+  // First identify circular references
+  nodes.forEach((node) => {
+    const parentId = node[parentField] as string;
+    if (parentId && parentId !== rootIdentifier) {
+      if (detectCycle(node[idField] as string, parentId, nodes, idField, parentField)) {
+        results.circularRefs.push(node);
+        nodeMap.delete(node[idField] as string); // Remove from processing
+      }
+    }
+  });
+
+  // Process remaining nodes
+  const rootNodes = nodes.filter(
+    (n) => n[parentField] === rootIdentifier && !results.circularRefs.includes(n)
+  );
+
+  if (rootNodes.length) {
     for (const rootNode of rootNodes) {
       results.tree.push({ ...rootNode, children: [] } as TreeNode<T>);
     }
-  } else {
-    console.log('could not find root node');
   }
 
-  for (const node of nodes) {
+  // Build the tree excluding circular refs
+  const remainingNodes = nodes.filter(
+    (n) => !results.circularRefs.includes(n) && n[parentField] !== rootIdentifier
+  );
+
+  for (const node of remainingNodes) {
     const treeNode: TreeNode<T> = { ...node, children: [] };
     let parent: TreeNode<T> | undefined;
+
     for (const root of results.tree) {
       parent = findNodeById(root, node[parentField] as string, idField);
       if (parent) break;
     }
+
     if (parent) {
       parent.children.push(treeNode);
     } else {
-      if (node[parentField] !== rootIdentifier) results.orphanedNodes.push(node);
+      if (node[parentField] !== rootIdentifier) {
+        results.orphanedNodes.push(node);
+      }
     }
   }
-  console.log('results', JSON.stringify(results));
+
   return results;
 }
