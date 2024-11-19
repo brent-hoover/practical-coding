@@ -1,5 +1,5 @@
-import fs from 'fs/promises';
-import path from 'path';
+const fs = require('fs/promises');
+const path = require('path');
 
 async function padDirectoryNumbers(directoryPath) {
   try {
@@ -8,7 +8,7 @@ async function padDirectoryNumbers(directoryPath) {
 
     for (const entry of entries) {
       if (entry.isDirectory()) {
-        const currentPath = path.join(directoryPath, entry.name);
+        let currentPath = path.join(directoryPath, entry.name);
 
         // Check if directory starts with a number
         const match = entry.name.match(/^(\d+)-(.*)/);
