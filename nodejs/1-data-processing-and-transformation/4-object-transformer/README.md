@@ -1,4 +1,4 @@
-# Transform Nest JSON to Flat Structure
+# Transform Nested JSON to Flat Structure
 
 ## Requirements:
 
