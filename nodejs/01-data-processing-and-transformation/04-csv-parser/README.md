@@ -1,5 +1,10 @@
 # CSV Parser Exercise
 
+## Exercise Information
+- Difficulty: INTERMEDIATE
+- Estimated Time: 3-4 hours
+- Prerequisites: TypeScript, string manipulation, parsing techniques
+
 ## Problem Description
 
 Implement a function that parses CSV (Comma-Separated Values) text into an array of objects. This is a common task when processing data files, API responses, or user uploads.
@@ -97,8 +102,4 @@ Consider:
 
 ## Extension Ideas
 
-Once you have the basic implementation working, consider adding:
-- Support for newlines within quoted fields
-- Type inference for numeric fields
-- Error handling for malformed CSV
-- Stream processing for large files
+Once you have the basic impl

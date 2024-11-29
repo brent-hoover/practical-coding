@@ -1,15 +1,15 @@
 # Log Aggregator Exercise
 
+## Exercise Information
+- Difficulty: INTERMEDIATE
+- Estimated Time: 3-4 hours
+- Prerequisites: TypeScript, data aggregation, time-based operations
+
 ## Problem Description
 
 Implement a function that processes an array of log entries and produces a summary of log activity. This is a common task in log analysis and monitoring systems.
 
 ### Function Signature
-```typescript
-function aggregateLogs(logs: LogEntry[]): AggregatedLogs
-```
-
-### Types
 ```typescript
 type LogLevel = 'ERROR' | 'WARN' | 'INFO' | 'DEBUG';
 
@@ -30,6 +30,11 @@ type AggregatedLogs = {
   lastTimestamp: string;
   firstTimestamp: string;
 };
+
+function aggregateLogs(
+  logs: LogEntry[],
+  options: ProcessorOptions
+): AggregatedLogs
 ```
 
 ### Requirements

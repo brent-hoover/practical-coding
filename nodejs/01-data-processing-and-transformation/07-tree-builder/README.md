@@ -1,5 +1,14 @@
 # Tree Builder Exercise
 
+## Exercise Information
+- Difficulty: ADVANCED
+- Estimated Time: 3-4 hours
+- Prerequisites:
+   - TypeScript generics
+   - Tree data structures
+   - Recursive algorithms
+   - Type safety concepts
+
 ## Problem Description
 
 Implement a function that converts a flat array of nodes with parent-child relationships into a nested tree structure. This is a common task when working with hierarchical data from databases or APIs that store tree structures in a flat format.
@@ -10,10 +19,7 @@ function buildTree<T extends FlatNode>(
   nodes: T[],
   options: BuildTreeOptions
 ): TreeResult<T>
-```
 
-### Types
-```typescript
 // Input node type - flat structure
 type FlatNode = {
   id: string;
@@ -121,7 +127,7 @@ const result = buildTree(nodes, { rootIdentifier: null });
 }
 ```
 
-## Notes for Candidates
+## Notes
 
 This exercise tests your ability to:
 - Transform data structures

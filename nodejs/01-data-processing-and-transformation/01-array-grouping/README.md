@@ -1,5 +1,10 @@
 # Group Objects Exercise
 
+## Exercise Information
+- Difficulty: BEGINNER
+- Estimated Time: 2-3 hours
+- Prerequisites: Basic TypeScript, array methods, object manipulation
+
 ## Problem Description
 
 Implement a function that groups an array of objects by a specified field. This is a common operation when processing data, similar to SQL's GROUP BY clause or LINQ's GroupBy method.
@@ -14,8 +19,8 @@ function groupBy(array: DataObject[], field: string): GroupedData
 The function should:
 1. Take an array of objects and a field name as parameters
 2. Return an object where:
-    - Keys are the unique values of the specified field from the input objects
-    - Values are arrays containing all objects that have that value for the specified field
+   - Keys are the unique values of the specified field from the input objects
+   - Values are arrays containing all objects that have that value for the specified field
 
 ### Edge Cases to Handle
 

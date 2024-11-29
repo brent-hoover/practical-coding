@@ -1,18 +1,19 @@
 # Inventory Aggregator Exercise
 
+## Exercise Information
+- Difficulty: INTERMEDIATE
+- Estimated Time: 3-4 hours
+- Prerequisites:
+   - TypeScript
+   - Data aggregation
+   - Business logic implementation
+   - Status calculation patterns
+
 ## Problem Description
 
 Implement a function that aggregates product inventory data across multiple warehouses to provide a comprehensive view of stock levels and inventory status. This is a common requirement in e-commerce and inventory management systems.
 
 ### Function Signature
-```typescript
-function aggregateInventory(
-  warehouseInventories: WarehouseInventory[],
-  options: InventoryAggregateOptions = {}
-): InventoryAggregateResult
-```
-
-### Types
 ```typescript
 type WarehouseInventory = {
   warehouseId: string;
@@ -55,6 +56,11 @@ type InventoryAggregateResult = {
   needsRestockCount: number;
   totalInventoryCount: number;
 };
+
+function aggregateInventory(
+  warehouseInventories: WarehouseInventory[],
+  options: InventoryAggregateOptions = {}
+): InventoryAggregateResult
 ```
 
 ### Requirements
@@ -62,21 +68,21 @@ type InventoryAggregateResult = {
 The function should:
 
 1. Basic Aggregation:
-    - Combine inventory data for the same SKU across warehouses
-    - Calculate total quantities (total, available, reserved, damaged)
-    - Track stock locations and quantities
-    - Maintain accurate counts for various inventory statuses
+   - Combine inventory data for the same SKU across warehouses
+   - Calculate total quantities (total, available, reserved, damaged)
+   - Track stock locations and quantities
+   - Maintain accurate counts for various inventory statuses
 
 2. Status Determination:
-    - OUT_OF_STOCK: No available quantity
-    - LOW_STOCK: Available quantity below threshold
-    - IN_STOCK: Sufficient available quantity
-    - Track products needing restock (available quantity below restockThreshold)
+   - OUT_OF_STOCK: No available quantity
+   - LOW_STOCK: Available quantity below threshold
+   - IN_STOCK: Sufficient available quantity
+   - Track products needing restock (available quantity below restockThreshold)
 
 3. Filtering and Options:
-    - Support excluding inactive products
-    - Allow custom low stock threshold
-    - Handle missing or partial data gracefully
+   - Support excluding inactive products
+   - Allow custom low stock threshold
+   - Handle missing or partial data gracefully
 
 ### Example
 
@@ -140,7 +146,7 @@ const result = aggregateInventory(warehouseInventories);
 }
 ```
 
-## Notes for Candidates
+## Notes
 
 This exercise tests your ability to:
 - Process and combine data from multiple sources
@@ -175,8 +181,11 @@ This exercise simulates real-world scenarios like:
 ## Extension Ideas
 
 Once you have the basic implementation working, consider adding:
-- Inventory value calculations
-- Stock movement trends
-- Warehouse capacity analysis
-- Reorder suggestions
-- Stock transfer recommendations
+1. Inventory value calculations
+2. Stock movement trends
+3. Warehouse capacity analysis
+4. Reorder suggestions
+5. Stock transfer recommendations
+6. Historical tracking
+7. Predictive analytics
+8. 
