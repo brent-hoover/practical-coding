@@ -1,22 +1,35 @@
-type GreetingResponse = {
-  message: string;
+type QueueStatus = {
+  size: number;
+  active: boolean;
+  processing: boolean;
+  processed: number;
+  failed: number;
 };
 
-export async function hello(name: string): Promise<string> {
-  try {
-    const response = await fetch('https://api.example.com/greet');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+export class AsyncQueue<T> {
+  constructor(
+    consumer: (item: T) => Promise<void>,
+    options?: {
+      maxRetries?: number;
+      retryDelay?: number;
     }
-    const data = (await response.json()) as GreetingResponse;
-    return `Hello, ${name}! Server says: ${data.message}`;
-  } catch (error) {
-    // Fallback in case of network errors or API issues
-    return `Hello, ${name}!`;
+  ) {
+    throw new Error("Not implemented");
   }
-}
 
-// For a simpler example without external dependencies:
-export function greet(name: string): string {
-  return `Hello, ${name}!`;
+  async enqueue(item: T): Promise<void> {
+    throw new Error("Not implemented");
+  }
+
+  pause(): void {
+    throw new Error("Not implemented");
+  }
+
+  resume(): void {
+    throw new Error("Not implemented");
+  }
+
+  getStatus(): QueueStatus {
+    throw new Error("Not implemented");
+  }
 }
