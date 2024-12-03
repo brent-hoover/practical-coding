@@ -3,7 +3,14 @@ const path = require('path');
 
 async function isDirectoryEmpty(dirPath) {
   const files = await fs.readdir(dirPath);
-  return files.length === 0;
+  if (files.length === 0) return true;
+
+  // If there's only one file and it's README.md, consider it empty
+  if (files.length === 1 && files[0].toLowerCase() === 'readme.md') {
+    return true;
+  }
+
+  return false;
 }
 
 async function copyDirectory(src, dest) {
