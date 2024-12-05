@@ -3,179 +3,136 @@
 ## Exercise Information
 - Difficulty: BEGINNER
 - Estimated Time: 2-3 hours
-- Prerequisites:
-    - Basic TypeScript
-    - Node.js runtime
-    - Understanding of files and directories
+- Prerequisites: Basic TypeScript, Async/Await, Error handling
 
 ## Problem Description
 
-Implement a file system operations wrapper that provides a consistent interface for common file operations, handles paths correctly, and manages errors appropriately. This is a fundamental skill for working with files and directories in Node.js applications.
+Create a file management system that can perform common file operations efficiently and safely. This is a fundamental skill needed for handling files, logs, configurations, and data storage in Node.js applications.
 
 ### Function Signature
 ```typescript
 type FileOptions = {
   encoding?: BufferEncoding;
-  flag?: string;
   mode?: number;
+  flag?: string;
 };
 
-type WatchCallback = (event: 'change' | 'rename', filename: string) => void;
+class FileManager {
+  constructor(basePath: string);
 
-class FileSystem {
-  constructor(options?: {
-    basePath?: string;
-    defaultEncoding?: BufferEncoding;
-  });
-
-  // Read file contents
-  readFile(path: string, options?: FileOptions): Promise<string | Buffer>;
-
-  // Write file contents
+  // Write data to file
   writeFile(
     path: string, 
-    data: string | Buffer,
+    data: string | Buffer, 
     options?: FileOptions
   ): Promise<void>;
 
-  // Read directory contents
-  readDirectory(path: string): Promise<string[]>;
+  // Read file contents
+  readFile(
+    path: string, 
+    options?: FileOptions
+  ): Promise<string | Buffer>;
 
-  // Watch file or directory
-  watch(path: string, callback: WatchCallback): void;
+  // Check if file exists
+  exists(path: string): Promise<boolean>;
 
-  // Get file information
-  getStats(path: string): Promise<FileStats>;
+  // Watch file/directory for changes
+  watch(
+    path: string, 
+    onChange: (eventType: string, filename: string) => void
+  ): void;
+
+  // List directory contents
+  readDir(path: string): Promise<string[]>;
 }
-
-type FileStats = {
-  size: number;
-  created: Date;
-  modified: Date;
-  isFile: boolean;
-  isDirectory: boolean;
-};
 ```
 
 ### Requirements
 
-1. Basic Operations:
-    - File reading/writing
-    - Directory listing
-    - File watching
-    - Stats retrieval
+1. File Operations:
+    - Read files safely
+    - Write files atomically
+    - Handle different encodings
+    - Watch for changes
 
-2. Path Handling:
-    - Path normalization
-    - Relative paths
-    - Path validation
-    - Directory creation
+2. Directory Operations:
+    - List directory contents
+    - Create directories
+    - Handle nested paths
+    - Clean up resources
 
-3. Error Management:
+3. Error Handling:
     - Permission errors
-    - Missing files
+    - Missing files/directories
     - Invalid paths
-    - Resource busy
-
-### Edge Cases to Handle
-
-- File not found
-- Permission denied
-- Path traversal
-- Directory not empty
-- Invalid encodings
-- Large files
-- Locked files
-- Concurrent access
+    - Lock conflicts
 
 ### Example
 
 ```typescript
-// Create file system handler
-const fs = new FileSystem({
-  basePath: './data',
-  defaultEncoding: 'utf8'
-});
-
-// Read file
-try {
-  const content = await fs.readFile('config.json');
-  console.log(JSON.parse(content.toString()));
-} catch (error) {
-  console.error('Failed to read file:', error);
-}
+// Create file manager
+const files = new FileManager('./data');
 
 // Write file
-await fs.writeFile(
-  'logs/app.log',
-  'Application started\n',
-  { flag: 'a' }  // Append mode
-);
+try {
+  await files.writeFile(
+    'config.json',
+    JSON.stringify({ port: 3000 }, null, 2)
+  );
+} catch (error) {
+  console.error('Failed to write config:', error);
+}
 
-// List directory
-const files = await fs.readDirectory('logs');
-console.log('Log files:', files);
-
-// Watch directory
-fs.watch('logs', (event, filename) => {
-  console.log(`${event} detected for ${filename}`);
+// Read file
+const content = await files.readFile('config.json', {
+  encoding: 'utf8'
 });
 
-// Get file stats
-const stats = await fs.getStats('config.json');
-console.log(stats);
-// {
-//   size: 1234,
-//   created: 2024-01-01T00:00:00.000Z,
-//   modified: 2024-01-01T12:00:00.000Z,
-//   isFile: true,
-//   isDirectory: false
-// }
+// Watch for changes
+files.watch('config.json', (event, filename) => {
+  console.log(`${filename} was ${event}`);
+});
+
+// List directory
+const entries = await files.readDir('logs');
+for (const entry of entries) {
+  if (entry.endsWith('.log')) {
+    const stats = await files.stat(entry);
+    console.log(`${entry}: ${stats.size} bytes`);
+  }
+}
 ```
 
 ## Notes
 
 This exercise tests your ability to:
-- Work with file systems
-- Handle paths correctly
-- Manage errors
-- Watch for changes
-- Process files safely
+- Handle file operations safely
+- Manage file system errors
+- Work with async operations
+- Clean up resources properly
 
 Consider:
-- Path security
-- Error handling
-- Performance impact
+- File locking
+- Atomic operations
+- Error recovery
 - Resource cleanup
-- Platform differences
-
-## Getting Started
-
-1. Implement your solution in `src/index.ts`
-2. Run tests using `npm test`
-3. Ensure all test cases pass
-4. Consider adding additional test cases for edge cases
+- Cross-platform paths
 
 ## Extension Ideas
 
 Once you have the basic implementation working, consider adding:
-1. Recursive operations
-2. File streams
-3. Directory copying
+1. File streams for large files
+2. Directory recursion
+3. File type detection
 4. File locking
 5. Temporary files
-6. Atomic writes
-7. File permissions
-8. Change monitoring
 
 ## Real-World Applications
 
 This functionality is commonly used in:
-- Configuration management
-- Log handling
-- Data processing
+- Log management
+- Configuration files
+- Data storage
 - File uploads
-- Backup systems
 - Build tools
-- Development tools
-- System monitoring
+- Development utilities

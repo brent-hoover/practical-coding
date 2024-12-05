@@ -9,7 +9,6 @@ async function isDirectoryEmpty(dirPath) {
   if (files.length === 1 && files[0].toLowerCase() === 'readme.md') {
     return true;
   }
-
   return false;
 }
 
